@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 3.5)
+
+project(sqlpoolTest VERSION 0.1 LANGUAGES CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Boost REQUIRED)
+find_package(Threads REQUIRED)
+
+set(PROJECT_SOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/main.cpp
+)
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+    INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC sqlpoll
+    Threads::Threads
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
