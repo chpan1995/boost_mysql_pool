@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/cw/worksource/boost_mysql_pool/build",
+  "command": "/usr/bin/c++ -DBOOST_CHARCONV_DYN_LINK -DBOOST_CHARCONV_NO_LIB -I/home/cw/worksource/boost_mysql_pool/build -I/home/cw/worksource/boost_mysql_pool -std=gnu++17 -o CMakeFiles/sqlpoll.dir/SqlPool.cpp.o -c /home/cw/worksource/boost_mysql_pool/SqlPool.cpp",
+  "file": "/home/cw/worksource/boost_mysql_pool/SqlPool.cpp",
+  "output": "CMakeFiles/sqlpoll.dir/SqlPool.cpp.o"
+},
+{
+  "directory": "/home/cw/worksource/boost_mysql_pool/build/demo",
+  "command": "/usr/bin/c++ -DBOOST_CHARCONV_DYN_LINK -DBOOST_CHARCONV_NO_LIB -I/home/cw/worksource/boost_mysql_pool/build/demo -I/home/cw/worksource/boost_mysql_pool/demo -I/home/cw/worksource/boost_mysql_pool -std=gnu++17 -o CMakeFiles/sqlpoolTest.dir/main.cpp.o -c /home/cw/worksource/boost_mysql_pool/demo/main.cpp",
+  "file": "/home/cw/worksource/boost_mysql_pool/demo/main.cpp",
+  "output": "demo/CMakeFiles/sqlpoolTest.dir/main.cpp.o"
+}
+]

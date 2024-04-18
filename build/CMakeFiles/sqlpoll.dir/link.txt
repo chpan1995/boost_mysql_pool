@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsqlpoll.a CMakeFiles/sqlpoll.dir/SqlPool.cpp.o
+/usr/bin/ranlib libsqlpoll.a
