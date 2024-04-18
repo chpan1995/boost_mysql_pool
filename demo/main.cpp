@@ -67,7 +67,6 @@ int main(int argc, char **argv) {
 
   // 利用一个tuple查询
   {
-    std::array<std::string, 3> arry{"chpan", "123", "2024-04-03 08:37:20"};
     std::tuple<std::string, std::string, std::string> tp =
         std::make_tuple("chpan", "123", "2024-04-03 08:37:20");
     boost::mysql::results result;
