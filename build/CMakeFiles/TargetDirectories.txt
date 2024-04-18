@@ -1,6 +1,0 @@
-/home/cw/worksource/boost_mysql_pool/build/CMakeFiles/sqlpoll.dir
-/home/cw/worksource/boost_mysql_pool/build/CMakeFiles/edit_cache.dir
-/home/cw/worksource/boost_mysql_pool/build/CMakeFiles/rebuild_cache.dir
-/home/cw/worksource/boost_mysql_pool/build/demo/CMakeFiles/sqlpoolTest.dir
-/home/cw/worksource/boost_mysql_pool/build/demo/CMakeFiles/edit_cache.dir
-/home/cw/worksource/boost_mysql_pool/build/demo/CMakeFiles/rebuild_cache.dir

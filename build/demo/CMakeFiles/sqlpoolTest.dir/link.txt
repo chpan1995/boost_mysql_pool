@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/sqlpoolTest.dir/main.cpp.o -o sqlpoolTest  -Wl,-rpath,/usr/local/lib ../libsqlpoll.a -lpthread /usr/lib/x86_64-linux-gnu/libssl.so /usr/local/lib/libboost_charconv.so.1.85.0 /usr/lib/x86_64-linux-gnu/libcrypto.so 
