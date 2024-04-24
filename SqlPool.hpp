@@ -2,7 +2,7 @@
 #define SQLPOOL_H
 
 #include <boost/describe/class.hpp>
-#include <boost/mysql/connection_pool.hpp>
+// #include <boost/mysql/connection_pool.hpp>
 #include <boost/mysql/error_with_diagnostics.hpp>
 #include <boost/mysql/handshake_params.hpp>
 #include <boost/mysql/pool_params.hpp>
@@ -15,7 +15,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ssl/context.hpp>
 #include <boost/asio/thread_pool.hpp>
-#include <boost/asio/yield.hpp>
+// #include <boost/asio/yield.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/optional/optional.hpp>
 #include <boost/optional/optional_io.hpp>
