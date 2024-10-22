@@ -1,88 +1,53 @@
 #include "SqlPool.hpp"
+#include <boost/asio.hpp>
 
 namespace data_center {
 
 constexpr std::uint8_t POOL_SIZE = 10;
 
 SqlPool::SqlPool(/* args */) {
-
-  connect("192.168.1.158",3306,"gauture","Gz-123456","A100");
-
-  // TODO
-
-  // Configuration for the connection pool
-  // boost::mysql::pool_params pool_prms{
-  //     // Connect using TCP, to the given hostname and using the default port
-  //     boost::mysql::host_and_port{"192.168.1.158"},
-  //     "gauture",
-  //     "Gz-123456",
-  //     "E600",
-  // };
-  // boost::mysql::connection_pool
-  // p(boost::mysql::pool_executor_params::thread_safe(m_th_pool.get_executor()),
-  //     std::move(pool_prms));
-  // Create the connection pool
-  // m_pool = boost::shared_ptr<boost::mysql::connection_pool>(new
-  // boost::mysql::connection_pool(
-  //     boost::mysql::pool_executor_params::thread_safe(m_th_pool.get_executor()),
-  //     std::move(pool_prms)));
-  // m_pool->async_run(boost::asio::detached);
-  // qinfo << m_pool->valid() << std::endl;
+    
+        // connect(pconf->host(),pconf->port(),pconf->username(),"Gz-123456","ricesystem");
+        boost::mysql::pool_params pool_prms{
+                                            boost::mysql::host_and_port{"127.0.0.1",3306},
+                                            "gauture",
+                                            "Gz-123456",
+                                            "ricesystem",
+                                            };
+        pool_prms.initial_size=10;
+        pool_prms.max_size=10;
+        m_pool = std::make_shared<boost::mysql::connection_pool>(
+            boost::mysql::pool_executor_params::thread_safe(m_th_pool.get_executor()),
+            std::move(pool_prms));
+        m_pool->async_run([this](boost::mysql::error_code ec){
+            if(ec) {
+                std::cout<<ec.message().c_str();
+            }else {
+                std::cout<< "创建pool success";
+            }
+        });
 }
 
 SqlPool::~SqlPool() {
-  while (!m_cons.empty()) {
-    try {
-      m_cons.front();
-      m_cons.pop();
-    } catch (const boost::mysql::error_with_diagnostics &err) {
-      std::cerr << "Error: " << err.what() << '\n'
-                << "Server diagnostics: "
-                << err.get_diagnostics().server_message().data();
-    } catch (const std::exception &e) {
-      std::cerr << e.what() << '\n';
-    }
-  }
+    m_pool->cancel();
 }
 
-void SqlPool::connect(std::string ip, std::uint32_t port, std::string username,
-                      std::string password, std::string database) {
-  try {
-    for (int i = 0; i < POOL_SIZE; i++) {
-      m_cons.push(
-          std::make_shared<connode>(ip, port, username, password, database));
-      std::cout << "connect success";
-    }
-  } catch (const boost::mysql::error_with_diagnostics &err) {
-    std::cerr << "Error: " << err.what() << '\n'
-              << "Server diagnostics: "
-              << err.get_diagnostics().server_message().data();
-    exit(0);
-  } catch (const std::exception &err) {
-    std::cerr << "Error: " << err.what();
-    exit(0);
-  }
-}
-
-std::shared_ptr<connode> SqlPool::startTransaction()
+boost::mysql::pooled_connection SqlPool::startTransaction()
 {
-    std::unique_lock<std::mutex> lk(m_mtx);
-    if (!m_cons.empty()) {
-        auto conn = m_cons.front();
-        m_cons.pop();
+    auto conn = getConn();
+    if(conn.valid()) {
         boost::mysql::results result;
-        conn->con->execute("START TRANSACTION",result);
-        return conn;
+        conn->execute("START TRANSACTION",result);
+    }else {
+        std::cerr << "Error: " << "Have not connected";
     }
-    std::cerr << "Error: " << "Have not connected";
-    return {};
+    return conn;
 }
 
-void SqlPool::commit(std::shared_ptr<connode> conn)
+void SqlPool::commit(boost::mysql::pooled_connection& conn)
 {
     boost::mysql::results result;
-    conn->con->execute("COMMIT", result);
-    releaseCon(conn);
+    conn->execute("COMMIT", result);
 }
 
 SqlPool *SqlPool::instance()
@@ -90,20 +55,24 @@ SqlPool *SqlPool::instance()
     static SqlPool pool;
     return &pool;
 }
-std::shared_ptr<connode> SqlPool::getCon() {
-  std::unique_lock<std::mutex> lk(m_mtx);
-  if (!m_cons.empty()) {
-    auto conn = m_cons.front();
-    m_cons.pop();
-    return conn;
-  }
-  std::cerr << "Error: " << "Have not connected";
-  return {};
-}
 
-void SqlPool::releaseCon(std::shared_ptr<connode> con) {
-  std::unique_lock<std::mutex> lk(m_mtx);
-  m_cons.push(con);
+boost::mysql::pooled_connection SqlPool::getConn()
+{
+    boost::mysql::diagnostics diag;
+    boost::mysql::pooled_connection conn;
+    try{
+        auto future = m_pool->async_get_connection(std::chrono::seconds(3),diag,boost::asio::use_future);
+        conn = std::move(future.get());
+    }catch(const boost::mysql::error_with_diagnostics& err)
+    {
+        std::cout <<"Uncaught exception: ",
+            err.what(),
+            "\nServer diagnostics: ",
+            err.get_diagnostics().server_message().data();
+    }catch (const boost::system::system_error &ec) {
+        std::cout << ec.what();
+    }
+    return conn;
 }
 
 }
