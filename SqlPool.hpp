@@ -152,9 +152,6 @@ static std::string datateTostring(boost::mysql::datetime &datetime) {
 namespace data_center {
 class SqlPool {
 public:
-  void connect(std::string ip, std::uint32_t port, std::string username,
-               std::string password, std::string database);
-
   template <typename T, typename... Args>
   void query(std::string sql, T &res, Args... args);
 
@@ -205,6 +202,7 @@ void SqlPool::query(std::string sql, T &res, Args... args) {
       boost::system::error_code error;
       boost::mysql::diagnostics err_dia;
     }
+    
   }
 }
 
